@@ -6,3 +6,8 @@ Track NBA statistics for every player.
 pip3 install nba_api
 pip3 install pandas
 ```
+
+### Usage
+```
+python3 check.py
+```
