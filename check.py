@@ -19,6 +19,7 @@
 Dependencies:
 pip3 install nba_api
 pip3 install pandas
+pip install scikit-learn
 
 """
 

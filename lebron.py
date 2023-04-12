@@ -101,7 +101,7 @@ def getOdds():
 
 # from oddsapi import OddsAPI
 
-# api_key = '9b14f4e6cb8f01797776da76b32d7e17'  # Replace with your API key
+# api_key = ''  # Replace with your API key
 # odds_api = OddsApiClient(api_key)
 
 # sport_key = 'basketball_nba'  # Specify the sport
@@ -112,7 +112,7 @@ def getOdds():
 
 # print(f"The current odds for {lebron_name} to score are {lebron_odds}")
 
-# client = OddsApiClient(api_key='9b14f4e6cb8f01797776da76b32d7e17')
+# client = OddsApiClient(api_key='')
 # response = client.retrieve_sports()
 
 def getDataFrame(minute_filter = 0):
