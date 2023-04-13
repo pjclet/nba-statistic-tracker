@@ -28,6 +28,7 @@ from nba_api.stats.library.parameters import SeasonAll
 from nba_api.stats.static import teams
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.stats.static import players
+from nba_api.stats.static import teams
 
 import pandas as pd
 # import matplotlib.pyplot as plt
@@ -57,6 +58,18 @@ def getDataFrame(player_id, minute_filter = 0):
 
     stats = last_10_games[['GAME_DATE', 'MATCHUP', 'WL', 'MIN' , 'PTS', 'REB', 'AST', 'STL', 'BLK', 'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT']]
     stats_new = stats[stats['MIN'] >= minute_filter]
+
+    return stats_new
+
+def getTeamFilteredDataFrame(player_id, team):
+    gamelog = playergamelog.PlayerGameLog(player_id=player_id, season=SeasonAll.all)
+    
+
+    last_10_games = gamelog.get_data_frames()[0].head(100)  # Get the last 10 games
+
+    stats = last_10_games[['GAME_DATE', 'MATCHUP', 'WL', 'MIN' , 'PTS', 'REB', 'AST', 'STL', 'BLK', 'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT']]
+    stats_new = stats[stats['MATCHUP'].str.contains(team)]
+    stats_new = stats_new.reset_index(drop=True)
 
     return stats_new
 
@@ -113,6 +126,7 @@ def checkLine(data, stat, line):
 
     over, under = 0,0
     for i in range(len(data[stat])):
+        # print(f"{data[stat]}, {i}, {line}")
         if data[stat][i] > line:
             over += 1
         elif data[stat][i] < line:
@@ -199,7 +213,7 @@ def main():
         command = ""
 
         while True:
-            print("\nOptions: Points (p), Rebounds (r), Assists (a), New Player (n), Quit (q)")
+            print("\nOptions: Points (p), Rebounds (r), Assists (a), New Player (n), Enter Team Check (t), Quit (q)")
             command = input("   >>> ").strip().lower()
             
             # exit or error conditions
@@ -207,8 +221,24 @@ def main():
                 quit()
             if command == "n":
                 break
-            if not command in ["p","r","a"]:
+            if not command in ["p","r","a","t"]:
                 print("ERROR: Invalid command.")
+                continue
+            
+            # team command - set search into team mode
+            elif command == "t":
+                team = input("Team Name: ").strip().lower()
+                check = teams.find_teams_by_full_name(team)
+                if check == []:
+                    print("ERROR: Unknown team name")
+                    continue
+                # print(check[0]['abbreviation'])
+                
+                teamData = getTeamFilteredDataFrame(id, check[0]['abbreviation'])
+                print(teamData.head(10))
+
+                playerData = teamData
+                getStats(playerData.head(10), name.title())
                 continue
 
             number = input("Enter stat number (e.g. Points over/under 20.5, assists over 4.5, etc.): ").strip()
@@ -231,6 +261,10 @@ def main():
                 checkLine(playerData.head(50), 'AST', float(number))
                 checkLine(playerData.head(25), 'AST', float(number))
                 checkLine(playerData.head(10), 'AST', float(number))
+
+            
+
+                
 
 if __name__ == '__main__':
     main()
