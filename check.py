@@ -241,7 +241,7 @@ def main():
                 getStats(playerData.head(10), name.title())
                 continue
 
-            number = input("Enter stat number (e.g. Points over/under 20.5, assists over 4.5, etc.): ").strip()
+            number = input("Enter stat number (e.g. Points over/under 20.5, assists over 4.5, etc.)\n   >>> ").strip()
             if number.isalpha():
                 print("ERROR: Please enter an integer or float.")
                 continue
